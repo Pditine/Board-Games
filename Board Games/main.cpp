@@ -1,22 +1,20 @@
-// C++大作业-坦克大战-李健豪-202213093015.cpp
-
 #include <thread>
 #include "GameManager.h"
 
-GameManager gameManager;
+//GameManager gameManager = *GameManager::Instance();
 
 void FixedUpdate()
 {
     while (true)
     {
-        switch (gameManager.GetState())
+        switch (GameManager::Instance()->GetState())
         {
         case MainMenuState:
             break;
         case SelectLevelState:
             break;
-        case theGameState:
-            gameManager.FixedUpdateGame();
+        case TheGameState:
+            GameManager::Instance()->FixedUpdateGame();
             break;
         case GameOverState:
             break;
@@ -27,22 +25,22 @@ void FixedUpdate()
 
 void Update()
 {
-    switch (gameManager.GetState())
+    switch (GameManager::Instance()->GetState())
     {
     case MainMenuState:
-        gameManager.UpdateMainMenu();
+        GameManager::Instance()->UpdateMainMenu();
         break;
     case SelectLevelState:
-        gameManager.UpdateSelectLevel();
+        GameManager::Instance()->UpdateSelectLevel();
         break;
     case AboutState:
-        gameManager.UpdateAbout();
+        GameManager::Instance()->UpdateAbout();
         break;
-    case theGameState:
-        gameManager.UpdateGame();
+    case TheGameState:
+        GameManager::Instance()->UpdateGame();
         break;
     case GameOverState:
-        gameManager.UpdateGameOver();
+        GameManager::Instance()->UpdateGameOver();
         break;
     case ExitGameState:
         return;
@@ -58,7 +56,7 @@ int main()
     while (true)
     {
         Update();
-        if (gameManager.GetState() == ExitGameState) return 0;
+        if (GameManager::Instance()->GetState() == ExitGameState) return 0;
     }
 
     return 0;

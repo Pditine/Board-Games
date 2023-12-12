@@ -1,20 +1,15 @@
 #include "GameManager.h"
-//#include "Map.hpp"
 #include <windows.h>
 #include <fstream>
-//#include "EnemyTank.hpp"
 #include <list>
 
-//GameManager* GameManager::_instance = NULL;
-//
-//GameManager* GameManager::Instance()
-//{
-//	if (_instance==NULL)
-//	{
-//		_instance = new GameManager();
-//	}
-//	return _instance;
-//}
+
+GameManager* GameManager::Instance()
+{
+	static GameManager _instance;
+
+	return &_instance;
+}
 
 GameState GameManager::GetState()
 {
@@ -46,7 +41,7 @@ void GameManager::OnAbout()
 void GameManager::OnGame()
 {
 	InitLevelScene();
-	_state = theGameState;
+	_state = TheGameState;
 }
 
 void GameManager::OnGameOver(bool isWin)
@@ -60,8 +55,6 @@ void GameManager::OnGameOver(bool isWin)
 		putimage(0, 0, _gameOverImages + 1);
 	}
 	_state = GameOverState;
-	//Map::Instance()->_enemyTanks.clear();
-	//Map::Instance()->_bullets.clear();
 }
 
 void GameManager::OnExitGame()
@@ -227,11 +220,11 @@ GameManager::GameManager()
 	loadimage(_mainMenuImages + 1, "Resources/MainMenu1.png");
 	loadimage(_mainMenuImages + 2, "Resources/MainMenu2.png");
 
-	loadimage(_selectLevelsImages, "Resources/SelectLevel1.png");
-	loadimage(_selectLevelsImages + 1, "Resources/SelectLevel2.png");
-	loadimage(_selectLevelsImages + 2, "Resources/SelectLevel3.png");
-	loadimage(_selectLevelsImages + 3, "Resources/SelectLevel4.png");
-	loadimage(_selectLevelsImages + 4, "Resources/SelectLevel5.png");
+	//loadimage(_selectLevelsImages, "Resources/SelectLevel1.png");
+	//loadimage(_selectLevelsImages + 1, "Resources/SelectLevel2.png");
+	//loadimage(_selectLevelsImages + 2, "Resources/SelectLevel3.png");
+	//loadimage(_selectLevelsImages + 3, "Resources/SelectLevel4.png");
+	//loadimage(_selectLevelsImages + 4, "Resources/SelectLevel5.png");
 
 	loadimage(&_aboutBackground, "Resources/About.png");
 

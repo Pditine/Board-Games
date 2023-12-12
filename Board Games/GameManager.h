@@ -3,14 +3,14 @@
 
 enum GameState
 {
-    MainMenuState, SelectLevelState, AboutState, theGameState, GameOverState, ExitGameState
+    MainMenuState, SelectLevelState, AboutState, TheGameState, GameOverState, ExitGameState
 };
 
 class GameManager
 {
 public:
 
-    //static GameManager* Instance();
+    static GameManager* Instance();
 
     /// <summary>
     /// 获取状态信息
@@ -50,11 +50,11 @@ private:
     void OnSelectLevel();
     void OnAbout();
     void OnGame();
+    /// 初始化游戏
     void OnGameOver(bool isWin);
     void OnExitGame();
 
     /// <summary>
-    /// 初始化游戏
     /// </summary>
     void InitGame();
 
