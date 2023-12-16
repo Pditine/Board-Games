@@ -24,6 +24,9 @@
     <ClCompile Include="ChineseChess.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BoardGameFactory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameManager.h">
@@ -33,6 +36,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ChineseChess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BoardGameFactory.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,8 +1,6 @@
 #include <thread>
 #include "GameManager.h"
 
-//GameManager gameManager = *GameManager::Instance();
-
 void FixedUpdate()
 {
     while (true)
@@ -51,7 +49,6 @@ int main()
 {
     std::thread fixedUpdateThread(FixedUpdate);
     fixedUpdateThread.detach();
-
 
     while (true)
     {

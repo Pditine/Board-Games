@@ -1,5 +1,8 @@
 #pragma once
 #include <easyx.h>
+#include <vector>
+
+class BoardGame;
 
 enum GameState
 {
@@ -44,6 +47,8 @@ private:
     IMAGE _gameOverImages[2];
 
     GameState _state = MainMenuState; // 游戏的状态
+
+    std::vector<BoardGame> _games;
 
     // 当进入指定状态时执行
     void OnMainMenu();
