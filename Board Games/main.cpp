@@ -9,7 +9,7 @@ void FixedUpdate()
         {
         case MainMenuState:
             break;
-        case SelectLevelState:
+        case SelectGameState:
             break;
         case TheGameState:
             GameManager::Instance()->FixedUpdateGame();
@@ -28,8 +28,8 @@ void Update()
     case MainMenuState:
         GameManager::Instance()->UpdateMainMenu();
         break;
-    case SelectLevelState:
-        GameManager::Instance()->UpdateSelectLevel();
+    case SelectGameState:
+        GameManager::Instance()->UpdateSelectGame();
         break;
     case AboutState:
         GameManager::Instance()->UpdateAbout();

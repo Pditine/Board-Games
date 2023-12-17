@@ -16,20 +16,20 @@ struct Grid
 	int y;
 };
 
-class ChineseChess: BoardGame
+class ChineseChess: public BoardGame
 {
 private:
 	Grid map[10][9];
 	IMAGE redChessPieceImages[9];
 	IMAGE blackChessPieceImages[9];
-	IMAGE chessBoard;
+	IMAGE* chessBoard = new IMAGE;
 	Grid* theSelectedGrid;
 	Grid* targetGrid;
 	bool turn;
-	IMAGE chessFrame;
+	IMAGE* chessFrame = new IMAGE;
 	SelectState state = SelectChess;
-	IMAGE redWin;
-	IMAGE blackWin;
+	IMAGE* redWin = new IMAGE;
+	IMAGE* blackWin = new IMAGE;
 
 	std::string SelectChessPiece();
 

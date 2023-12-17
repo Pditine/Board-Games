@@ -5,7 +5,7 @@ class BoardGame
 {
 protected:
 
-	IMAGE _gameIcon;
+	IMAGE* _gameIcon = new IMAGE();
 
 	static char* message;
 
@@ -68,7 +68,7 @@ public:
 		SendBoardMessage(message);
 	}
 
-	IMAGE GetGameIcon()
+	IMAGE* GetGameIcon()
 	{
 		return _gameIcon;
 	}

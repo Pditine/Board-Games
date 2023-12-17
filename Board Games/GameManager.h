@@ -6,7 +6,7 @@ class BoardGame;
 
 enum GameState
 {
-    MainMenuState, SelectLevelState, AboutState, TheGameState, GameOverState, ExitGameState
+    MainMenuState, SelectGameState, AboutState, TheGameState, GameOverState, ExitGameState
 };
 
 class GameManager
@@ -14,24 +14,25 @@ class GameManager
 public:
 
     static GameManager* Instance();
-
     /// <summary>
     /// 获取状态信息
     /// </summary>
     GameState GetState();
 
+    std::vector<BoardGame*>& GetGames();
+
     // 在指定状态时更新游戏
     void UpdateMainMenu();
-    void UpdateSelectLevel();
+    void UpdateSelectGame();
     void UpdateGame();
     void UpdateAbout();
     void FixedUpdateGame();
     void UpdateGameOver();
 
-    GameManager();
 private:
 
     //static GameManager* _instance;
+    GameManager();
 
     IMAGE _mainMenuImages[3]; // 主菜单中使用的选择不同按钮的贴图
     bool _mainMenuButtonIsPress = false; // 用于实现GetKeyDown
@@ -48,24 +49,21 @@ private:
 
     GameState _state = MainMenuState; // 游戏的状态
 
-    std::vector<BoardGame> _games;
+    std::vector<BoardGame*> _games;
 
     // 当进入指定状态时执行
     void OnMainMenu();
-    void OnSelectLevel();
+    void OnSelectGame();
     void OnAbout();
     void OnGame();
-    /// 初始化游戏
     void OnGameOver(bool isWin);
     void OnExitGame();
 
-    /// <summary>
-    /// </summary>
     void InitGame();
 
-    /// <summary>
-    /// 初始化关卡场景
-    /// </summary>
-    void InitLevelScene();
+    ///// <summary>
+    ///// 初始化关卡场景
+    ///// </summary>
+    //void InitLevelScene();
 };
 

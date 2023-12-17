@@ -4,24 +4,6 @@
 ChineseChess::ChineseChess()
 {
 	//loadimage(&_gameBoard,"Resources/ChineseChess/MainMenu0.png");
-	loadimage(&_gameIcon, "Resources/ChineseChess/chessBoard.png");
-	loadimage(&redWin, "Resources/ChineseChess/redWin.png");
-	loadimage(&blackWin, "Resources/ChineseChess/blackWin.png");
-
-	loadimage(&chessBoard, "Resources/ChineseChess/chessBoard.png");
-	loadimage(&chessFrame, "Resources/ChineseChess/ChessFrame.png");
-
-	//loadimage(redChessPieceImages+0, "Resources/RP.GIF");
-	loadimage(redChessPieceImages + 1, "Resources/ChineseChess/RedChessPiece1.GIF");
-	loadimage(redChessPieceImages + 2, "Resources/ChineseChess/RedChessPiece2.GIF");
-	loadimage(redChessPieceImages + 3, "Resources/ChineseChess/RedChessPiece3.GIF");
-	loadimage(redChessPieceImages + 4, "Resources/ChineseChess/RedChessPiece4.GIF");
-	loadimage(redChessPieceImages + 5, "Resources/ChineseChess/RedChessPiece5.GIF");
-	loadimage(redChessPieceImages + 6, "Resources/ChineseChess/RedChessPiece6.GIF");
-	loadimage(redChessPieceImages + 7, "Resources/ChineseChess/RedChessPiece7.GIF");
-	loadimage(redChessPieceImages + 8, "Resources/ChineseChess/RedChessPiece0.GIF");
-
-	//loadimage(blackChessPieceImages + 0, "Resources/BlackChessPiece0.GIF");
 	loadimage(blackChessPieceImages + 1, "Resources/ChineseChess/BlackChessPiece1.GIF");
 	loadimage(blackChessPieceImages + 2, "Resources/ChineseChess/BlackChessPiece2.GIF");
 	loadimage(blackChessPieceImages + 3, "Resources/ChineseChess/BlackChessPiece3.GIF");
@@ -30,6 +12,26 @@ ChineseChess::ChineseChess()
 	loadimage(blackChessPieceImages + 6, "Resources/ChineseChess/BlackChessPiece6.GIF");
 	loadimage(blackChessPieceImages + 7, "Resources/ChineseChess/BlackChessPiece7.GIF");
 	loadimage(blackChessPieceImages + 8, "Resources/ChineseChess/BlackChessPiece0.GIF");
+
+	loadimage(redChessPieceImages + 1, "Resources/ChineseChess/RedChessPiece1.GIF");
+	loadimage(redChessPieceImages + 2, "Resources/ChineseChess/RedChessPiece2.GIF");
+	loadimage(redChessPieceImages + 3, "Resources/ChineseChess/RedChessPiece3.GIF");
+	loadimage(redChessPieceImages + 4, "Resources/ChineseChess/RedChessPiece4.GIF");
+	loadimage(redChessPieceImages + 5, "Resources/ChineseChess/RedChessPiece5.GIF");
+	loadimage(redChessPieceImages + 6, "Resources/ChineseChess/RedChessPiece6.GIF");
+	loadimage(redChessPieceImages + 7, "Resources/ChineseChess/RedChessPiece7.GIF");
+	loadimage(redChessPieceImages + 8, "Resources/ChineseChess/RedChessPiece0.GIF");
+	loadimage(redWin, "Resources/ChineseChess/redWin.png");
+	loadimage(blackWin, "Resources/ChineseChess/blackWin.png");
+	loadimage(chessBoard, "Resources/ChineseChess/chessBoard.png");
+	loadimage(chessFrame, "Resources/ChineseChess/ChessFrame.png");
+	loadimage(_gameIcon, "Resources/ChineseChess/chessBoard.png");
+
+	//loadimage(redChessPieceImages+0, "Resources/RP.GIF");
+
+
+	//loadimage(blackChessPieceImages + 0, "Resources/BlackChessPiece0.GIF");
+
 }
 
 void ChineseChess::Operate() 
@@ -49,12 +51,12 @@ char* ChineseChess::ReceiveBoardMessage()
 
 void ChineseChess::UpdateBoardImage() 
 {
-	putimage(0, 0, &chessBoard);
+	putimage(0, 0, chessBoard);
 	for (int y = 0; y < 10; y++)
 		for (int x = 0; x < 9; x++)
 			drawAlpha(map[y][x].IsRed ? &redChessPieceImages[map[y][x].Id] : &blackChessPieceImages[map[y][x].Id], x * GRIDWIDTH, y * GRIDWIDTH);
 	if (theSelectedGrid != nullptr)
-		drawAlpha(&chessFrame, theSelectedGrid->x * GRIDWIDTH, theSelectedGrid->y * GRIDWIDTH);
+		drawAlpha(chessFrame, theSelectedGrid->x * GRIDWIDTH, theSelectedGrid->y * GRIDWIDTH);
 }
 
 void ChineseChess::GameOverCheck() 
@@ -254,7 +256,7 @@ void ChineseChess::InitGame()
 {
 	InitMap();
 	initgraph(377, 417);
-	putimage(0, 0, &chessBoard);
+	putimage(0, 0, chessBoard);
 	UpdateBoardImage();
 }
 
@@ -270,11 +272,11 @@ void ChineseChess::WinOrLoseCheck(int id, bool isRed)
 	{
 		if (isRed)
 		{
-			putimage(0, 0, &blackWin);
+			putimage(0, 0, blackWin);
 		}
 		else
 		{
-			putimage(0, 0, &redWin);
+			putimage(0, 0, redWin);
 		}
 	}
 }

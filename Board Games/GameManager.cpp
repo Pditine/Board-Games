@@ -1,14 +1,23 @@
 #include "GameManager.h"
 #include <windows.h>
 #include <fstream>
-#include <list>
+#include "BoardGameFactory.h"
+#include <iostream>
 
+#define Log(x) std::cout<<x<<std::endl
 
 GameManager* GameManager::Instance()
 {
-	static GameManager _instance;
+	static GameManager* instance = new GameManager();
 
-	return &_instance;
+	return instance;
+}
+
+
+
+std::vector<BoardGame*>& GameManager::GetGames()
+{
+	return _games;
 }
 
 GameState GameManager::GetState()
@@ -25,11 +34,11 @@ void GameManager::OnMainMenu()
 	_state = MainMenuState;
 }
 
-void GameManager::OnSelectLevel()
+void GameManager::OnSelectGame()
 {
-	putimage(0, 0, &_selectLevelsImages[0]);
+	putimage(0, 0, _games[0]->GetGameIcon());
 	_selectLeverlSelect = 0;
-	_state = SelectLevelState;
+	_state = SelectGameState;
 }
 
 void GameManager::OnAbout()
@@ -40,7 +49,7 @@ void GameManager::OnAbout()
 
 void GameManager::OnGame()
 {
-	InitLevelScene();
+	//InitLevelScene();
 	_state = TheGameState;
 }
 
@@ -101,7 +110,7 @@ void GameManager::UpdateMainMenu()
 			switch (_mainMenuSelect)
 			{
 			case 0:
-				OnSelectLevel();
+				OnSelectGame();
 				break;
 			case 1:
 				OnAbout();
@@ -118,7 +127,7 @@ void GameManager::UpdateMainMenu()
 	}
 }
 
-void GameManager::UpdateSelectLevel()
+void GameManager::UpdateSelectGame()
 {
 	if (GetAsyncKeyState(VK_LEFT))
 	{
@@ -206,16 +215,16 @@ void GameManager::FixedUpdateGame()
 
 #pragma endregion
 
-void GameManager::InitLevelScene()
-{
-	//Map::Instance()->Init(_selectLeverlSelect);
-	//Map::Instance()->PrintMap();
-}
-
-
+//void GameManager::InitLevelScene()
+//{
+//	//Map::Instance()->Init(_selectLeverlSelect);
+//	//Map::Instance()->PrintMap();
+//}
+//
+//
 GameManager::GameManager()
 {
-
+	_games = BoardGameFactory::CreateGames();
 	loadimage(_mainMenuImages, "Resources/MainMenu0.png");
 	loadimage(_mainMenuImages + 1, "Resources/MainMenu1.png");
 	loadimage(_mainMenuImages + 2, "Resources/MainMenu2.png");
