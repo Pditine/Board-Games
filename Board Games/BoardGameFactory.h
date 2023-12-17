@@ -9,5 +9,4 @@ private:
 public:
 	static std::vector<BoardGame*> CreateGames();
 
-	//BoardGameFactory* Instance();
 };

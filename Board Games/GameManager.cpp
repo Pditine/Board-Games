@@ -4,7 +4,10 @@
 #include "BoardGameFactory.h"
 #include <iostream>
 
+#ifdef _DEBUG
 #define Log(x) std::cout<<x<<std::endl
+#else Log(x)
+#endif
 
 GameManager* GameManager::Instance()
 {
@@ -12,8 +15,6 @@ GameManager* GameManager::Instance()
 
 	return instance;
 }
-
-
 
 std::vector<BoardGame*>& GameManager::GetGames()
 {
@@ -136,9 +137,10 @@ void GameManager::UpdateSelectGame()
 			_selectLeverlSelect--;
 			if (_selectLeverlSelect < 0)
 			{
-				_selectLeverlSelect = 4;
+				_selectLeverlSelect = _games.size()-1;
 			}
-			putimage(0, 0, &_selectLevelsImages[_selectLeverlSelect]);
+			//putimage(0, 0, _selectGameBackground);
+			putimage(0, 0, _games[_selectLeverlSelect]->GetGameIcon());
 			_selectLevelsButtonIsPress = true;
 		}
 	}
@@ -147,11 +149,12 @@ void GameManager::UpdateSelectGame()
 		if (!_selectLevelsButtonIsPress)
 		{
 			_selectLeverlSelect++;
-			if (_selectLeverlSelect > 4)
+			if (_selectLeverlSelect >= _games.size())
 			{
 				_selectLeverlSelect = 0;
 			}
-			putimage(0, 0, &_selectLevelsImages[_selectLeverlSelect]);
+			//putimage(0, 0, _selectGameBackground);
+			putimage(0, 0, _games[_selectLeverlSelect]->GetGameIcon());
 			_selectLevelsButtonIsPress = true;
 		}
 	}
@@ -234,7 +237,7 @@ GameManager::GameManager()
 	//loadimage(_selectLevelsImages + 2, "Resources/SelectLevel3.png");
 	//loadimage(_selectLevelsImages + 3, "Resources/SelectLevel4.png");
 	//loadimage(_selectLevelsImages + 4, "Resources/SelectLevel5.png");
-
+	loadimage(_selectGameBackground, "Resources/SelectGameBackground.png");
 	loadimage(&_aboutBackground, "Resources/About.png");
 
 	loadimage(_gameOverImages, "Resources/GameOver0.png");

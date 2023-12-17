@@ -25,13 +25,9 @@ ChineseChess::ChineseChess()
 	loadimage(blackWin, "Resources/ChineseChess/blackWin.png");
 	loadimage(chessBoard, "Resources/ChineseChess/chessBoard.png");
 	loadimage(chessFrame, "Resources/ChineseChess/ChessFrame.png");
-	loadimage(_gameIcon, "Resources/ChineseChess/chessBoard.png");
-
+	loadimage(_gameIcon, "Resources/ChineseChess/ChineseChessIcon.png");
 	//loadimage(redChessPieceImages+0, "Resources/RP.GIF");
-
-
 	//loadimage(blackChessPieceImages + 0, "Resources/BlackChessPiece0.GIF");
-
 }
 
 void ChineseChess::Operate() 

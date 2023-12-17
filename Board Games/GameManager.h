@@ -38,7 +38,7 @@ private:
     bool _mainMenuButtonIsPress = false; // 用于实现GetKeyDown
     int _mainMenuSelect = 0; // 主菜单中的功能选择
 
-    IMAGE _selectLevelsImages[5];
+    IMAGE* _selectGameBackground = new IMAGE;
     bool _selectLevelsButtonIsPress = false;
     int _selectLeverlSelect = 0;
 

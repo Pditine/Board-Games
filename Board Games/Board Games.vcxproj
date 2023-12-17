@@ -130,6 +130,7 @@
     <ClCompile Include="BoardGameFactory.cpp" />
     <ClCompile Include="ChineseChess.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Gomoku.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +138,7 @@
     <ClInclude Include="BoardGameFactory.h" />
     <ClInclude Include="ChineseChess.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Gomoku.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

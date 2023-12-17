@@ -56,6 +56,7 @@ protected:
 	}
 
 public:
+	virtual ~BoardGame() = default;
 	virtual void InitGame() = 0;
 
 	void Update()
