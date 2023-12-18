@@ -1,9 +1,10 @@
+#include <Socket.h>
 #include "ChineseChess.h"
 #include <graphics.h>
 #include <string>
+
 ChineseChess::ChineseChess()
 {
-	//loadimage(&_gameBoard,"Resources/ChineseChess/MainMenu0.png");
 	loadimage(blackChessPieceImages + 1, "Resources/ChineseChess/BlackChessPiece1.GIF");
 	loadimage(blackChessPieceImages + 2, "Resources/ChineseChess/BlackChessPiece2.GIF");
 	loadimage(blackChessPieceImages + 3, "Resources/ChineseChess/BlackChessPiece3.GIF");
@@ -12,7 +13,6 @@ ChineseChess::ChineseChess()
 	loadimage(blackChessPieceImages + 6, "Resources/ChineseChess/BlackChessPiece6.GIF");
 	loadimage(blackChessPieceImages + 7, "Resources/ChineseChess/BlackChessPiece7.GIF");
 	loadimage(blackChessPieceImages + 8, "Resources/ChineseChess/BlackChessPiece0.GIF");
-
 	loadimage(redChessPieceImages + 1, "Resources/ChineseChess/RedChessPiece1.GIF");
 	loadimage(redChessPieceImages + 2, "Resources/ChineseChess/RedChessPiece2.GIF");
 	loadimage(redChessPieceImages + 3, "Resources/ChineseChess/RedChessPiece3.GIF");
@@ -26,8 +26,6 @@ ChineseChess::ChineseChess()
 	loadimage(chessBoard, "Resources/ChineseChess/chessBoard.png");
 	loadimage(chessFrame, "Resources/ChineseChess/ChessFrame.png");
 	loadimage(_gameIcon, "Resources/ChineseChess/ChineseChessIcon.png");
-	//loadimage(redChessPieceImages+0, "Resources/RP.GIF");
-	//loadimage(blackChessPieceImages + 0, "Resources/BlackChessPiece0.GIF");
 }
 
 void ChineseChess::Operate() 
@@ -42,6 +40,7 @@ void ChineseChess::SendBoardMessage(const char* message)
 
 char* ChineseChess::ReceiveBoardMessage() 
 {
+
 	return nullptr;
 }
 
@@ -287,7 +286,6 @@ std::string ChineseChess::SelectChessPiece()
 		case SelectChess:
 			while (true)
 			{
-				std::cout << "走出个虎虎生风" << std::endl;
 				while (!m.mkLButton || theSelectedGrid == nullptr || theSelectedGrid->Id == 0)
 				{
 					m = GetMouseMsg();
@@ -304,7 +302,6 @@ std::string ChineseChess::SelectChessPiece()
 		case PutChess:
 			while (true)
 			{
-				std::cout << "走出个恍如隔世" << std::endl;
 				m = GetMouseMsg();
 				if (m.mkLButton)
 				{

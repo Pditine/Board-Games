@@ -47,5 +47,8 @@
     <ClInclude Include="Gomoku.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DEBUG.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

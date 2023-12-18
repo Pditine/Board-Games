@@ -1,6 +1,5 @@
 #include <thread>
 #include "GameManager.h"
-
 void FixedUpdate()
 {
     while (true)
@@ -52,7 +51,8 @@ int main()
 
     while (true)
     {
-        Update();
+        if(!IsIconic(GameManager::Instance()->GetGameWindow()))
+			Update();
         if (GameManager::Instance()->GetState() == ExitGameState) return 0;
     }
 

@@ -76,10 +76,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Board Games/Dependencies/GLFW/include;$(SolutionDir)Board Games/Dependencies/Socket</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Board Games/Dependencies/Socket;$(SolutionDir)Board Games/Dependencies/GLFW/lib-vc2022</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;Socket.lib;$(CoreLibraryDependencies);%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -90,12 +93,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Board Games/Dependencies/GLFW/include;$(SolutionDir)Board Games/Dependencies/Socket</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Board Games/Dependencies/Socket;$(SolutionDir)Board Games/Dependencies/GLFW/lib-vc2022</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;Socket.lib;$(CoreLibraryDependencies);%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,10 +110,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Board Games/Dependencies/GLFW/include;$(SolutionDir)Board Games/Dependencies/Socket</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Board Games/Dependencies/Socket;$(SolutionDir)Board Games/Dependencies/GLFW/lib-vc2022</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;Socket.lib;$(CoreLibraryDependencies);%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,12 +127,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Board Games/Dependencies/GLFW/include;$(SolutionDir)Board Games/Dependencies/Socket</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)/Board Games/Dependencies/Socket;$(SolutionDir)Board Games/Dependencies/GLFW/lib-vc2022</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;Socket.lib;$(CoreLibraryDependencies);%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -137,6 +149,7 @@
     <ClInclude Include="BoardGame.h" />
     <ClInclude Include="BoardGameFactory.h" />
     <ClInclude Include="ChineseChess.h" />
+    <ClInclude Include="DEBUG.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Gomoku.h" />
   </ItemGroup>

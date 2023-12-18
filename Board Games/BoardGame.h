@@ -3,11 +3,14 @@
 
 class BoardGame
 {
+private:
+	bool _hasFaceOff = false;
+
 protected:
 
 	IMAGE* _gameIcon = new IMAGE();
 
-	static char* message;
+	char* message;
 
 	virtual void Operate() = 0;
 
@@ -59,14 +62,20 @@ public:
 	virtual ~BoardGame() = default;
 	virtual void InitGame() = 0;
 
+	void HasFaceOff()
+	{
+		_hasFaceOff = true;
+	}
+
 	void Update()
 	{
-		ReceiveBoardMessage();
+		if(_hasFaceOff)
+			message = ReceiveBoardMessage();
 		UpdateBoardImage();
 		GameOverCheck();
 		Operate();
-		GameOverCheck();
 		SendBoardMessage(message);
+		GameOverCheck();
 	}
 
 	IMAGE* GetGameIcon()

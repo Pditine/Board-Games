@@ -63,6 +63,9 @@ private:
 public:
 	ChineseChess();
 	void InitGame() override;
+
+
+
 protected:
 	void Operate() override;
 

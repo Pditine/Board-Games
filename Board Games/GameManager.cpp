@@ -1,6 +1,6 @@
+#include "Socket.h"
 #include "GameManager.h"
 #include <windows.h>
-#include <fstream>
 #include "BoardGameFactory.h"
 #include <iostream>
 
@@ -26,6 +26,12 @@ GameState GameManager::GetState()
 	return _state;
 }
 
+HWND GameManager::GetGameWindow() const
+{
+	return _theGameWindow;
+}
+
+
 #pragma region 进入状态
 
 void GameManager::OnMainMenu()
@@ -38,7 +44,7 @@ void GameManager::OnMainMenu()
 void GameManager::OnSelectGame()
 {
 	putimage(0, 0, _games[0]->GetGameIcon());
-	_selectLeverlSelect = 0;
+	_GameIndex = 0;
 	_state = SelectGameState;
 }
 
@@ -48,11 +54,24 @@ void GameManager::OnAbout()
 	_state = AboutState;
 }
 
-void GameManager::OnGame()
+void GameManager::OnServerGame()
 {
-	//InitLevelScene();
+	currentGame = _games[_GameIndex];
 	_state = TheGameState;
+	currentGame->HasFaceOff();
+	currentGame->InitGame();
+	currentGame->Update();
 }
+
+void GameManager::OnClientGame()
+{
+	currentGame = _games[_GameIndex];
+	_state = TheGameState;
+	currentGame->InitGame();
+	currentGame->Update();
+	currentGame->HasFaceOff();
+}
+
 
 void GameManager::OnGameOver(bool isWin)
 {
@@ -134,13 +153,12 @@ void GameManager::UpdateSelectGame()
 	{
 		if (!_selectLevelsButtonIsPress)
 		{
-			_selectLeverlSelect--;
-			if (_selectLeverlSelect < 0)
+			_GameIndex--;
+			if (_GameIndex < 0)
 			{
-				_selectLeverlSelect = _games.size()-1;
+				_GameIndex = _games.size()-1;
 			}
-			//putimage(0, 0, _selectGameBackground);
-			putimage(0, 0, _games[_selectLeverlSelect]->GetGameIcon());
+			putimage(0, 0, _games[_GameIndex]->GetGameIcon());
 			_selectLevelsButtonIsPress = true;
 		}
 	}
@@ -148,13 +166,12 @@ void GameManager::UpdateSelectGame()
 	{
 		if (!_selectLevelsButtonIsPress)
 		{
-			_selectLeverlSelect++;
-			if (_selectLeverlSelect >= _games.size())
+			_GameIndex++;
+			if (_GameIndex >= _games.size())
 			{
-				_selectLeverlSelect = 0;
+				_GameIndex = 0;
 			}
-			//putimage(0, 0, _selectGameBackground);
-			putimage(0, 0, _games[_selectLeverlSelect]->GetGameIcon());
+			putimage(0, 0, _games[_GameIndex]->GetGameIcon());
 			_selectLevelsButtonIsPress = true;
 		}
 	}
@@ -165,11 +182,40 @@ void GameManager::UpdateSelectGame()
 			OnMainMenu();
 		}
 	}
-	else if (GetAsyncKeyState(VK_CONTROL))
+	else if (GetAsyncKeyState(VK_UP))
 	{
 		if (!_selectLevelsButtonIsPress)
 		{
-			OnGame();
+			ServerSocket server;
+			if (!server.IsValid()) return;
+			// 显示服务端IP
+			std::cout << "[IP]: " << server.GetIpAddress() << std::endl;
+			// 等待客户端连接，至连接成功
+			drawtext(("等待连接...\nIP地址:" + server.GetIpAddress()).c_str(), new RECT{80, 100, 340, 300}, DT_BOTTOM);
+			while (!server.Accept()) {}
+			OnServerGame();
+		}
+	}
+	else if (GetAsyncKeyState(VK_DOWN))
+	{
+		std::string tips = "请输入服务端IP地址";
+		if (!_selectLevelsButtonIsPress)
+		{
+			// 创建客户端socket并连接到服务器
+			ClientSocket client;
+			while (true)
+			{
+				char server_ip[15];
+				InputBox(server_ip, 15,tips.c_str(), "", "null");
+				std::cout << server_ip << std::endl;
+				if (client.Connect(server_ip))
+					// 连接成功
+					break;
+				tips = R"(连接失败，请重新输入服务端IP地址)";
+			}
+			if (!client.IsValid()) return;
+
+			OnClientGame();
 		}
 	}
 	else
@@ -188,7 +234,7 @@ void GameManager::UpdateAbout()
 
 void GameManager::UpdateGame()
 {
-	//Map::Instance()->Update();
+	currentGame->Update();
 }
 
 void GameManager::UpdateGameOver()
@@ -201,45 +247,18 @@ void GameManager::UpdateGameOver()
 
 void GameManager::FixedUpdateGame()
 {
-	/*Map::Instance()->FixedUpdate();
-	if (Map::Instance()->GetMyTank()->isDestroy)
-	{
-		OnGameOver(false);
-		return;
-	}
-	std::list<EnemyTank>::iterator a = Map::Instance()->_enemyTanks.begin();
-	for (int i = 0; i < Map::Instance()->_enemyTanks.size(); i++)
-	{
-		if (!a->isDestroy)return;
-		a++;
-	}
-	OnGameOver(true);*/
+
 }
 
 #pragma endregion
-
-//void GameManager::InitLevelScene()
-//{
-//	//Map::Instance()->Init(_selectLeverlSelect);
-//	//Map::Instance()->PrintMap();
-//}
-//
-//
 GameManager::GameManager()
 {
 	_games = BoardGameFactory::CreateGames();
 	loadimage(_mainMenuImages, "Resources/MainMenu0.png");
 	loadimage(_mainMenuImages + 1, "Resources/MainMenu1.png");
 	loadimage(_mainMenuImages + 2, "Resources/MainMenu2.png");
-
-	//loadimage(_selectLevelsImages, "Resources/SelectLevel1.png");
-	//loadimage(_selectLevelsImages + 1, "Resources/SelectLevel2.png");
-	//loadimage(_selectLevelsImages + 2, "Resources/SelectLevel3.png");
-	//loadimage(_selectLevelsImages + 3, "Resources/SelectLevel4.png");
-	//loadimage(_selectLevelsImages + 4, "Resources/SelectLevel5.png");
 	loadimage(_selectGameBackground, "Resources/SelectGameBackground.png");
 	loadimage(&_aboutBackground, "Resources/About.png");
-
 	loadimage(_gameOverImages, "Resources/GameOver0.png");
 	loadimage(_gameOverImages + 1, "Resources/GameOver1.png");
 
@@ -248,7 +267,7 @@ GameManager::GameManager()
 
 void GameManager::InitGame()
 {
-	initgraph(400, 400);
+	_theGameWindow = initgraph(400, 400);
 	putimage(0, 0, &_mainMenuImages[0]);
 	//char input[5];
 	//InputBox(input, 5, "输入", "聊天框", "null");
