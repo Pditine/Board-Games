@@ -2,7 +2,8 @@
 #include "ChineseChess.h"
 #include <graphics.h>
 #include <string>
-
+#include "DEBUG.h"
+#include "GameManager.h"
 ChineseChess::ChineseChess()
 {
 	loadimage(blackChessPieceImages + 1, "Resources/ChineseChess/BlackChessPiece1.GIF");
@@ -26,26 +27,111 @@ ChineseChess::ChineseChess()
 	loadimage(chessBoard, "Resources/ChineseChess/chessBoard.png");
 	loadimage(chessFrame, "Resources/ChineseChess/ChessFrame.png");
 	loadimage(_gameIcon, "Resources/ChineseChess/ChineseChessIcon.png");
+	
 }
 
-void ChineseChess::Operate() 
+std::string ChineseChess::OutputInformation(Grid& current, Grid& target)
 {
-
+	return std::to_string(current.x) + std::to_string(current.y) + std::to_string(target.x) + std::to_string(target.y);
 }
 
-void ChineseChess::SendBoardMessage(const char* message) 
+std::string ChineseChess::Operate() 
 {
-
-}
-
-char* ChineseChess::ReceiveBoardMessage() 
-{
-
+	Log("操作");
+	MOUSEMSG m = GetMouseMsg();
+	while (true)
+	{
+		switch (state)
+		{
+		case SelectChess:
+			while (true)
+			{
+				while (!m.mkLButton || theSelectedGrid == nullptr || theSelectedGrid->Id == 0)
+				{
+					m = GetMouseMsg();
+					theSelectedGrid = &map[m.y / GRIDWIDTH][m.x / GRIDWIDTH];
+				}
+				if (theSelectedGrid->Id != 0)
+				{
+					UpdateBoardImage();
+					state = PutChess;
+					break;
+				}
+			}
+			break;
+		case PutChess:
+			while (true)
+			{
+				m = GetMouseMsg();
+				if (m.mkLButton)
+				{
+					targetGrid = &map[m.y / GRIDWIDTH][m.x / GRIDWIDTH];
+					if (theSelectedGrid != nullptr && CanMoveToTarget(map, *theSelectedGrid, targetGrid->x, targetGrid->y))
+					{
+						int id = targetGrid->Id;
+						bool isRed = targetGrid->IsRed;
+						ApplyMove(*theSelectedGrid, *targetGrid);
+						Grid* selectGrid = theSelectedGrid;
+						theSelectedGrid = nullptr;
+						UpdateBoardImage();
+						//WinOrLoseCheck(id, isRed);
+						Log("操作输出:");
+						Log(OutputInformation(*selectGrid, *targetGrid));
+						return OutputInformation(*selectGrid, *targetGrid);
+					}
+					theSelectedGrid = nullptr;
+					UpdateBoardImage();
+					state = SelectChess;
+					break;
+				}
+				else if (m.mkRButton)
+				{
+					theSelectedGrid = nullptr;
+					UpdateBoardImage();
+					state = SelectChess;
+					break;
+				}
+			}
+			break;
+		}
+	}
 	return nullptr;
+}
+
+void ChineseChess::SendBoardMessage(const std::string& message)
+{
+	Log("发送信息:"+message);
+	Socket->Send(message.c_str(),static_cast<int>(strlen(message.c_str())));
+}
+
+std::string ChineseChess::ReceiveBoardMessage() 
+{
+	Log("接受开始");
+	char message[5];
+	const int bytes_received = Socket->Receive(message, sizeof(message));
+	if (bytes_received > 0)
+		Log("接受成功");
+	else
+		Log("接受失败");
+
+	message[bytes_received] = '\0';
+
+	Log(message);
+	int currentX = (int)message[0] - '0';
+	int currentY = (int)message[1] - '0';
+	int targetX = (int)message[2] - '0';
+	int targetY = (int)message[3] - '0';
+
+	int id = map[targetY][targetX].Id;
+	bool isRed = map[targetY][targetX].IsRed;
+	ApplyMove(map[currentY][currentX], map[targetY][targetX]);
+	theSelectedGrid = nullptr;
+	return message;
 }
 
 void ChineseChess::UpdateBoardImage() 
 {
+	Log("更新地图");
 	putimage(0, 0, chessBoard);
 	for (int y = 0; y < 10; y++)
 		for (int x = 0; x < 9; x++)
@@ -54,11 +140,41 @@ void ChineseChess::UpdateBoardImage()
 		drawAlpha(chessFrame, theSelectedGrid->x * GRIDWIDTH, theSelectedGrid->y * GRIDWIDTH);
 }
 
-void ChineseChess::GameOverCheck() 
+bool ChineseChess::GameOverCheck() 
 {
-	
+	Log("结束检测");
+	bool redIsWin = true;
+	bool blackIsWin = true;
+	for (int y = 0; y <= 2; y++)
+		for (int x = 3; x <= 5; x++)
+		{
+			if(map[y][x].Id == 7)
+			{
+				blackIsWin = false;
+				break;
+			}
+		}
+	for (int y = 7; y <= 9; y++)
+		for (int x = 3; x <= 5; x++)
+		{
+			if (map[y][x].Id == 7)
+			{
+				redIsWin = false;
+				break;
+			}
+		}
+	if (redIsWin)
+	{
+		GameManager::Instance()->OnGameOver(redWin);
+		return true;
+	}
+	if (blackIsWin)
+	{
+		GameManager::Instance()->OnGameOver(blackWin);
+		return true;
+	}
+	return false;
 }
-
 
 int ChineseChess::XCheck(const Grid (&map)[10][9], int x1, int x2, int y)
 {
@@ -101,7 +217,6 @@ int ChineseChess::YCheck(const Grid (&map)[10][9], int x, int y1, int y2)
 	}
 	return amount;
 }
-
 
 bool ChineseChess::CanMoveToTarget(const Grid (&map)[10][9], const Grid& current, const int targetX, int targetY)
 {
@@ -216,7 +331,6 @@ bool ChineseChess::CanMoveToTarget(const Grid (&map)[10][9], const Grid& current
 	}
 }
 
-
 void ChineseChess::InitMap()
 {
 	int intMap[10][9] =
@@ -249,90 +363,11 @@ void ChineseChess::InitMap()
 
 void ChineseChess::InitGame()
 {
+	Log("初始化游戏");
 	InitMap();
 	initgraph(377, 417);
 	putimage(0, 0, chessBoard);
 	UpdateBoardImage();
-}
-
-std::string ChineseChess::OutputInformation(Grid & current, Grid & target)
-{
-	std::cout << std::to_string(current.x) + std::to_string(current.y) + std::to_string(target.x) + std::to_string(target.y) << std::endl;
-	return std::to_string(current.x) + std::to_string(current.y) + std::to_string(target.x) + std::to_string(target.y);
-}
-
-void ChineseChess::WinOrLoseCheck(int id, bool isRed)
-{
-	if (id == 7)
-	{
-		if (isRed)
-		{
-			putimage(0, 0, blackWin);
-		}
-		else
-		{
-			putimage(0, 0, redWin);
-		}
-	}
-}
-
-std::string ChineseChess::SelectChessPiece()
-{
-	MOUSEMSG m = GetMouseMsg();
-	while (true)
-	{
-		switch (state)
-		{
-		case SelectChess:
-			while (true)
-			{
-				while (!m.mkLButton || theSelectedGrid == nullptr || theSelectedGrid->Id == 0)
-				{
-					m = GetMouseMsg();
-					theSelectedGrid = &map[m.y / GRIDWIDTH][m.x / GRIDWIDTH];
-				}
-				if (theSelectedGrid->Id != 0)
-				{
-					UpdateBoardImage();
-					state = PutChess;
-					break;
-				}
-			}
-			break;
-		case PutChess:
-			while (true)
-			{
-				m = GetMouseMsg();
-				if (m.mkLButton)
-				{
-					targetGrid = &map[m.y / GRIDWIDTH][m.x / GRIDWIDTH];
-					if (theSelectedGrid != nullptr && CanMoveToTarget(map, *theSelectedGrid, targetGrid->x, targetGrid->y))
-					{
-						int id = targetGrid->Id;
-						bool isRed = targetGrid->IsRed;
-						ApplyMove(*theSelectedGrid, *targetGrid);
-						Grid* selectGrid = theSelectedGrid;
-						theSelectedGrid = nullptr;
-						UpdateBoardImage();
-						WinOrLoseCheck(id, isRed);
-						return OutputInformation(*selectGrid, *targetGrid);
-					}
-					theSelectedGrid = nullptr;
-					UpdateBoardImage();
-					state = SelectChess;
-					break;
-				}
-				else if (m.mkRButton)
-				{
-					theSelectedGrid = nullptr;
-					UpdateBoardImage();
-					state = SelectChess;
-					break;
-				}
-			}
-			break;
-		}
-	}
 }
 
 void ChineseChess::ApplyMove(Grid& current, Grid& target)

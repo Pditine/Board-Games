@@ -3,15 +3,15 @@
 class Gomoku : public BoardGame
 {
 protected:
-	void Operate() override;
+	std::string Operate() override;
 
-	void SendBoardMessage(const char* message) override;
+	void SendBoardMessage(const std::string& message) override;
 
-	char* ReceiveBoardMessage() override;
+	std::string ReceiveBoardMessage() override;
 
 	void UpdateBoardImage() override;
 
-	void GameOverCheck() override;
+	bool GameOverCheck() override;
 
 public:
 	Gomoku();

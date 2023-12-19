@@ -1,8 +1,8 @@
 #include "Gomoku.h"
 
-void Gomoku::GameOverCheck()
+bool Gomoku::GameOverCheck()
 {
-	
+	return false;
 }
 
 void Gomoku::InitGame()
@@ -10,17 +10,17 @@ void Gomoku::InitGame()
 	
 }
 
-void Gomoku::Operate()
+std::string Gomoku::Operate()
 {
-	
+	return nullptr;
 }
 
-char* Gomoku::ReceiveBoardMessage()
+std::string Gomoku::ReceiveBoardMessage()
 {
-	return  nullptr;
+	return nullptr;
 }
 
-void Gomoku::SendBoardMessage(const char* message)
+void Gomoku::SendBoardMessage(const std::string& message)
 {
 	
 }

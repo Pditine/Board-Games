@@ -25,13 +25,15 @@ private:
 	IMAGE* chessBoard = new IMAGE;
 	Grid* theSelectedGrid;
 	Grid* targetGrid;
-	bool turn;
+	//bool turn;
 	IMAGE* chessFrame = new IMAGE;
 	SelectState state = SelectChess;
 	IMAGE* redWin = new IMAGE;
 	IMAGE* blackWin = new IMAGE;
 
-	std::string SelectChessPiece();
+	bool _gameIsOver = false;
+
+	//std::string SelectChessPiece();
 
 	//0-空,1-兵,2-炮,3-车,4-马,5-相,6-士,7-将
 	void InitMap();
@@ -57,7 +59,7 @@ private:
  */
 	void ApplyMove(Grid& current, Grid& target);
 
-	void WinOrLoseCheck(int id, bool isRed);
+	//void WinOrLoseCheck(int id, bool isRed);
 
 	std::string OutputInformation(Grid& current, Grid& target);
 public:
@@ -67,14 +69,14 @@ public:
 
 
 protected:
-	void Operate() override;
+	std::string Operate() override;
 
-	void SendBoardMessage(const char* message) override;
+	void SendBoardMessage(const std::string& message) override;
 
-	char* ReceiveBoardMessage() override;
+	std::string ReceiveBoardMessage() override;
 
 	void UpdateBoardImage() override;
 
-	void GameOverCheck() override;
+	bool GameOverCheck() override;
 };
 

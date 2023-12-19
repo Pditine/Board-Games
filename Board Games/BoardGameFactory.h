@@ -4,9 +4,6 @@
 
 class BoardGameFactory
 {
-private:
-	//BoardGameFactory() {}
 public:
 	static std::vector<BoardGame*> CreateGames();
-
 };

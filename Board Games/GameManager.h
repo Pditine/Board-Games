@@ -31,6 +31,8 @@ public:
 
     HWND GetGameWindow() const;
 
+    void OnGameOver(const IMAGE*);
+
 private:
 
     //static GameManager* _instance;
@@ -56,6 +58,8 @@ private:
 
     HWND _theGameWindow;
 
+    IMAGE* _blackBackground = new IMAGE();
+
     GameManager();
     // 当进入指定状态时执行
     void OnMainMenu();
@@ -63,7 +67,6 @@ private:
     void OnAbout();
     void OnServerGame();
     void OnClientGame();
-    void OnGameOver(bool isWin);
     void OnExitGame();
 
     void InitGame();

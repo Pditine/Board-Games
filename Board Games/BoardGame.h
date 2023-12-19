@@ -1,26 +1,30 @@
 #pragma once
 #include <easyx.h>
-
+#include <string>
+#include "DEBUG.h"
+class Socket;
 class BoardGame
 {
 private:
 	bool _hasFaceOff = false;
 
+	bool _isServer;
+
 protected:
 
 	IMAGE* _gameIcon = new IMAGE();
 
-	char* message;
+	std::string message;
 
-	virtual void Operate() = 0;
+	virtual std::string Operate() = 0;
 
-	virtual void SendBoardMessage(const char* message) = 0;
+	virtual void SendBoardMessage(const std::string& message) = 0;
 
-	virtual char* ReceiveBoardMessage() = 0;
+	virtual std::string ReceiveBoardMessage() = 0;
 
 	virtual void UpdateBoardImage() = 0;
 
-	virtual void GameOverCheck() = 0;
+	virtual bool GameOverCheck() = 0;
 
 	void drawAlpha(IMAGE* picture, int  picture_x, int picture_y) //x为载入图片的X坐标，y为Y坐标
 	{
@@ -59,8 +63,18 @@ protected:
 	}
 
 public:
+
+	Socket* Socket;
+
 	virtual ~BoardGame() = default;
 	virtual void InitGame() = 0;
+
+	
+
+	void SetIsServer(bool isServer)
+	{
+		_isServer = isServer;
+	}
 
 	void HasFaceOff()
 	{
@@ -69,13 +83,15 @@ public:
 
 	void Update()
 	{
+		Log("更新开始");
 		if(_hasFaceOff)
-			message = ReceiveBoardMessage();
+			ReceiveBoardMessage();
 		UpdateBoardImage();
-		GameOverCheck();
-		Operate();
+		if (GameOverCheck())return;
+		message = Operate();
 		SendBoardMessage(message);
 		GameOverCheck();
+		Log("更新结束");
 	}
 
 	IMAGE* GetGameIcon()

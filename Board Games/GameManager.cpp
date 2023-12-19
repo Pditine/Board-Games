@@ -3,11 +3,7 @@
 #include <windows.h>
 #include "BoardGameFactory.h"
 #include <iostream>
-
-#ifdef _DEBUG
-#define Log(x) std::cout<<x<<std::endl
-#else Log(x)
-#endif
+#include "DEBUG.h"
 
 GameManager* GameManager::Instance()
 {
@@ -31,11 +27,11 @@ HWND GameManager::GetGameWindow() const
 	return _theGameWindow;
 }
 
-
 #pragma region 进入状态
 
 void GameManager::OnMainMenu()
 {
+	_theGameWindow = initgraph(400, 400);
 	putimage(0, 0, &_mainMenuImages[0]);
 	_mainMenuSelect = 0;
 	_state = MainMenuState;
@@ -56,33 +52,26 @@ void GameManager::OnAbout()
 
 void GameManager::OnServerGame()
 {
-	currentGame = _games[_GameIndex];
+	//currentGame = _games[_GameIndex];
 	_state = TheGameState;
-	currentGame->HasFaceOff();
 	currentGame->InitGame();
 	currentGame->Update();
+	currentGame->HasFaceOff();
 }
 
 void GameManager::OnClientGame()
 {
-	currentGame = _games[_GameIndex];
+	//currentGame = _games[_GameIndex];
 	_state = TheGameState;
+	currentGame->HasFaceOff();
 	currentGame->InitGame();
 	currentGame->Update();
-	currentGame->HasFaceOff();
 }
 
 
-void GameManager::OnGameOver(bool isWin)
+void GameManager::OnGameOver(const IMAGE* const image)
 {
-	if (isWin)
-	{
-		putimage(0, 0, _gameOverImages);
-	}
-	else
-	{
-		putimage(0, 0, _gameOverImages + 1);
-	}
+	putimage(0,0,image);
 	_state = GameOverState;
 }
 
@@ -186,13 +175,17 @@ void GameManager::UpdateSelectGame()
 	{
 		if (!_selectLevelsButtonIsPress)
 		{
-			ServerSocket server;
-			if (!server.IsValid()) return;
+			ServerSocket* server = new ServerSocket();
+			if (!server->IsValid()) return;
 			// 显示服务端IP
-			std::cout << "[IP]: " << server.GetIpAddress() << std::endl;
+			Log("IP:" + server->GetIpAddress());
 			// 等待客户端连接，至连接成功
-			drawtext(("等待连接...\nIP地址:" + server.GetIpAddress()).c_str(), new RECT{80, 100, 340, 300}, DT_BOTTOM);
-			while (!server.Accept()) {}
+			putimage(0, 0, _blackBackground);
+			drawtext(("等待连接...\nIP地址:" + server->GetIpAddress()).c_str(), new RECT{80, 100, 340, 300}, DT_BOTTOM);
+			while (!server->Accept()) {}
+			currentGame = _games[_GameIndex];
+			currentGame->Socket = server;
+			currentGame->SetIsServer(true);
 			OnServerGame();
 		}
 	}
@@ -202,19 +195,21 @@ void GameManager::UpdateSelectGame()
 		if (!_selectLevelsButtonIsPress)
 		{
 			// 创建客户端socket并连接到服务器
-			ClientSocket client;
+			ClientSocket* client = new ClientSocket();
 			while (true)
 			{
 				char server_ip[15];
 				InputBox(server_ip, 15,tips.c_str(), "", "null");
 				std::cout << server_ip << std::endl;
-				if (client.Connect(server_ip))
+				if (client->Connect(server_ip))
 					// 连接成功
 					break;
 				tips = R"(连接失败，请重新输入服务端IP地址)";
 			}
-			if (!client.IsValid()) return;
-
+			if (!client->IsValid()) return;
+			currentGame = _games[_GameIndex];
+			currentGame->Socket = client;
+			currentGame->SetIsServer(false);
 			OnClientGame();
 		}
 	}
@@ -234,6 +229,7 @@ void GameManager::UpdateAbout()
 
 void GameManager::UpdateGame()
 {
+	Log("更新游戏");
 	currentGame->Update();
 }
 
@@ -261,6 +257,7 @@ GameManager::GameManager()
 	loadimage(&_aboutBackground, "Resources/About.png");
 	loadimage(_gameOverImages, "Resources/GameOver0.png");
 	loadimage(_gameOverImages + 1, "Resources/GameOver1.png");
+	loadimage(_blackBackground, "Resources/BlackBackground.png");
 
 	InitGame();
 }
